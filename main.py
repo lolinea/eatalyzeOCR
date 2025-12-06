@@ -32,19 +32,20 @@ def splitInitialResult(text):
 def splitResultValue(dictVal):
     resDict = {}
 
+    divider = dictVal['serving-size']
+    divider = divider.split('"')
+    divider = divider[1].split('g')
+    divider = int(divider[0])
+        
     for i in dictVal:
-        if i == 'serving-size':
-            divider = dictVal.split('"')
-            divider = divider[1].split('g')
-            divider = int(divider[0].strip())
+        if i == 'serving-size': continue
         else:
             try:
-                resDict[i+'_1g'] = round(float(dictVal[i].strip())/divider, 3)
+                resDict[i+'_1g'] = round(float(dictVal[i].strip())/divider, 4)
             except ValueError:
                 value = dictVal[i].split('}')
                 value = float(value[0].strip())
-                resDict[i+'_1g'] = round(value/divider, 3)
-
+                resDict[i+'_1g'] = round(value/divider, 4)
     return resDict
 
 @app.route('/', methods=['GET'])
@@ -74,12 +75,13 @@ def analyze():
     text = cleanString(text)
 
     splitDict = splitInitialResult(text)
-    # resDict = splitResultValue(splitDict)
+    resDict = splitResultValue(splitDict)
 
-    return splitDict
+    return resDict
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
 
