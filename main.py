@@ -73,10 +73,11 @@ def analyze():
     text = cleanString(text)
 
     splitDict = splitInitialResult(text)
-    resDict = splitResultValue(splitDict)
+    # resDict = splitResultValue(splitDict)
 
-    return resDict
+    return splitDict
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+
     app.run(host='0.0.0.0', port=port)
