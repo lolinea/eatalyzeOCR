@@ -9,7 +9,8 @@ import io
 
 app = Flask(__name__)
 
-client = genai.Client(api_key = 'AIzaSyBDqWbNj1Hl8bRMRpi0SOvDlP-CCTtkMHs')
+client = genai.Client(api_key = os.environ.get("GEMINI_API_KEY"))
+
 
 def cleanString(text):
     text = text.replace('```json', '').replace('```', '').strip()
@@ -81,3 +82,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
