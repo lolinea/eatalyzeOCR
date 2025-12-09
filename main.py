@@ -6,8 +6,10 @@ from flask import Flask, request, jsonify
 from google import genai
 from PIL import Image
 import io
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r'/*':{'origins':'*'}})
 
 client = genai.Client(api_key = os.environ.get("GEMINI_API_KEY"))
 
@@ -83,5 +85,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
 
 
