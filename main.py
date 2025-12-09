@@ -33,10 +33,13 @@ def splitInitialResult(text):
 
 def splitResultValue(dictVal):
     resDict = {}
-
+    
     divider = dictVal['serving-size']
     divider = divider.split('"')
-    divider = divider[1].split('g')
+    try:
+        divider = divider[1].split('g')
+    except IndexError:
+        divider = divider.split('g')
     divider = int(divider[0])
         
     for i in dictVal:
@@ -85,6 +88,7 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
 
 
 
