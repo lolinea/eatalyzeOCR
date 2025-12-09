@@ -13,7 +13,6 @@ CORS(app, resources={r'/*':{'origins':'*'}})
 
 client = genai.Client(api_key = os.environ.get("GEMINI_API_KEY"))
 
-
 def cleanString(text):
     text = text.replace('```json', '').replace('```', '').strip()
     text = re.sub(r'\s+', ' ', text).strip()
@@ -31,22 +30,16 @@ def splitInitialResult(text):
 
     return dictValue
 
-def splitResultValue(dictVal):
-    resDict = {}
-    
-    divider = dictVal['serving-size']
-    divider = int(divider)
-        
+def fixLastVal(dictVal):
     for i in dictVal:
-        if i == 'serving-size': continue
-        else:
-            try:
-                resDict[i+'_1g'] = round(float(dictVal[i].strip())/divider, 4)
-            except ValueError:
-                value = dictVal[i].split('}')
-                value = float(value[0].strip())
-                resDict[i+'_1g'] = round(value/divider, 4)
-    return resDict
+        try:
+            dictVal[i] = float(dictVal[i])
+        except ValueError:
+            print('hi')
+            value = dictVal[i].split('}')
+            value = float(value[0].strip())
+            dictVal[i] = value
+    return dictVal
 
 @app.route('/', methods=['GET'])
 def check():
@@ -63,7 +56,7 @@ def analyze():
         "as a single **JSON object**. Use keys like 'serving-size', 'energy-kcal', 'fat', 'carbohydrates', 'proteins', 'saturated-fat', 'trans-fat', 'sugars', 'added-sugars', 'sodium', 'salt', and 'fiber'. "
         "Do not include any text outside of the JSON object."
         "If the values are not in the image, fill the values with 0"
-        "Pay attention to the unit, normalize the unit so it's stated in g (gram) instead of mg (miligram)."
+        "Pay attention to the unit, normalize the unit so it's stated in g (gram), except sodium should be in mg (miligram)."
         "Don't mention the units of each keys"
     )
 
@@ -76,7 +69,7 @@ def analyze():
     text = cleanString(text)
 
     splitDict = splitInitialResult(text)
-    resDict = splitResultValue(splitDict)
+    resDict = fixLastVal(splitDict)
 
     return resDict
 
@@ -84,6 +77,7 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
 
 
 
