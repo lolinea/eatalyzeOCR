@@ -1,0 +1,1 @@
+This repository contains the OCR function for our Software Engineering Project. It utilized Google's Gemini OCR model. By providing the required prompt, Gemini will return values as expected. Some preprocessing are done to preprocess the text returned by Gemini, before making it usable for the NOVA Classification Machine Learning Model. 
